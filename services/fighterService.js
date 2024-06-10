@@ -1,23 +1,35 @@
 import { fighterRepository } from "../repositories/fighterRepository.js";
 
 class FighterService {
-  getAll() {
+  async getAll() {
     return fighterRepository.getAll();
   }
 
-  getById(id) {
+  async getById(id) {
     return fighterRepository.getById(id);
   }
 
-  create(fighter) {
+  async create(fighter) {
+    if (fighterRepository.getOne({ name: fighter.name })) {
+      throw new Error("Fighter with this name already exists");
+    }
     return fighterRepository.create(fighter);
   }
 
-  update(id, fighter) {
+  async update(id, fighter) {
+    const existingFighter = fighterRepository.getById(id);
+    if (!existingFighter) {
+      throw new Error("Fighter not found");
+    }
+    if (fighter.name && fighter.name !== existingFighter.name) {
+      if (fighterRepository.getOne({ name: fighter.name })) {
+        throw new Error("Fighter with this name already exists");
+      }
+    }
     return fighterRepository.update(id, fighter);
   }
 
-  delete(id) {
+  async delete(id) {
     return fighterRepository.delete(id);
   }
 }

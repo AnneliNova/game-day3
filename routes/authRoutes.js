@@ -4,17 +4,15 @@ import { responseMiddleware } from "../middlewares/response.middleware.js";
 
 const router = Router();
 
-router.post(
-  "/login",
-  async (req, res, next) => {
+router.post("/login", (req, res, next) => {
     try {
-      const { email, password } = req.body;
-      const user = await authService.login(email, password);
-      if (user) {
-        res.data = user;
+      // TODO: Implement login action (get the user if it exist with entered credentials)
+      if (authService.search !== null){
+        res.data = data;
       } else {
         res.err = { message: "Invalid credentials" };
       }
+    
     } catch (err) {
       res.err = err;
     } finally {

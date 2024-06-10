@@ -8,61 +8,31 @@ import {
 
 const router = Router();
 
-router.get("/", async (req, res, next) => {
-  try {
-    const fighters = await fighterService.getAll();
-    res.status(200).json(fighters);
-  } catch (error) {
-    next(error);
-  }
+// TODO: Implement route controllers for fighter
+
+// GET /api/fighters/
+router.get('/', async (req, res) => {
+  await fighterService.getAllFighters(req, res);
 });
 
-router.get("/:id", async (req, res, next) => {
-  try {
-    const fighter = await fighterService.getById(req.params.id);
-    if (!fighter) {
-      res.status(404).json({ error: true, message: "Fighter not found" });
-    } else {
-      res.status(200).json(fighter);
-    }
-  } catch (error) {
-    next(error);
-  }
+// GET /api/fighters/:id
+router.get('/:id', async (req, res) => {
+  await fighterService.getFighterById(req, res);
 });
 
-router.post("/", createFighterValid, async (req, res, next) => {
-  try {
-    const fighter = await fighterService.create(req.body);
-    res.status(200).json(fighter);
-  } catch (error) {
-    next(error);
-  }
+// POST /api/fighters
+router.post('/', createFighterValid, async (req, res) => {
+  await fighterService.createFighter(req, res);
 });
 
-router.patch("/:id", updateFighterValid, async (req, res, next) => {
-  try {
-    const fighter = await fighterService.update(req.params.id, req.body);
-    if (!fighter) {
-      res.status(404).json({ error: true, message: "Fighter not found" });
-    } else {
-      res.status(200).json(fighter);
-    }
-  } catch (error) {
-    next(error);
-  }
+// PUT /api/fighters/:id
+router.put('/:id', updateFighterValid, async (req, res) => {
+  await fighterService.updateFighter(req, res);
 });
 
-router.delete("/:id", async (req, res, next) => {
-  try {
-    const fighter = await fighterService.delete(req.params.id);
-    if (!fighter) {
-      res.status(404).json({ error: true, message: "Fighter not found" });
-    } else {
-      res.status(200).json({ message: "Fighter deleted" });
-    }
-  } catch (error) {
-    next(error);
-  }
+// DELETE /api/fighters/:id
+router.delete('/:id', async (req, res) => {
+  await fighterService.deleteFighter(req, res);
 });
 
 export { router };

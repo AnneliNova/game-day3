@@ -1,8 +1,11 @@
 import { userService } from "./userService.js";
 
 class AuthService {
-  async login(email, password) {
-    const user = userService.search({ email, password });
+  login(userData) {
+    const user = userService.search(userData);
+    if (!user) {
+      throw Error("User not found.");
+    }
     return user;
   }
 }

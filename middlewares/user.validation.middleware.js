@@ -1,37 +1,49 @@
 import { USER } from "../models/user.js";
 
-// Валідація властивостей користувача
-const validateUser = (user) => {
-  const { email, phoneNumber, password } = user;
-  if (!email || !email.endsWith('@gmail.com')) return false;
-  if (!phoneNumber || !phoneNumber.startsWith('+380') || phoneNumber.length !== 13) return false;
-  if (!password || password.length < 3) return false;
-  return true;
-};
-
-// Валідація створення користувача
 const createUserValid = (req, res, next) => {
-  const { id, ...user } = req.body;
-  const requiredFields = ["firstName", "lastName", "email", "phoneNumber", "password"];
+  // TODO: Implement validator for FIGHTER entity during creation
+  const { firstName, lastName, email, phoneNumber, password } = req.body;
 
-  for (let field of requiredFields) {
-    if (!user[field]) {
-      return res.status(400).json({ error: true, message: `Field ${field} is required` });
+  if (firstName === undefined || lastName === undefined || email === undefined || phoneNumber === undefined || password === undefined) {
+    return res.status(400).send({ error: 'Missing required fields for user creation' });
+  }
+
+  if (typeof firstName !== 'string' || typeof lastName !== 'string' || typeof email !== 'string' || typeof phoneNumber !== 'string' || typeof password !== 'string') {
+    return res.status(400).send({ error: 'Invalid data types for user properties' });
+  }
+
+  if (password.length < 3) {
+    return res.status(400).send({ error: 'Password must be at least 3 characters long' });
+  }
+
+  const isGmailEmail = (email) => {
+    const gmailRegex = /@gmail\.com$/i;
+    return gmailRegex.test(email);
+  };
+
+  if (!isGmailEmail(email)) {
+    return res.status(400).send({ error: 'Mail must be @gmail' });
+  }
+
+  const isUkrainePhoneNumber = (phoneNumber) => {
+    const ukraineRegex = /^\+380/;
+    return ukraineRegex.test(phoneNumber);
+  };
+
+  if (!isUkrainePhoneNumber(phoneNumber)){
+    return res.status(400).send({ error: 'The phone number must have the +380 country code' });
+  } else {
+    if (phoneNumber.length !== 13){
+      return res.status(400).send({ error: 'The phone number must have 13 digits' });
     }
   }
 
-  if (!validateUser(user)) {
-    return res.status(400).json({ error: true, message: "User entity to create isn’t valid" });
-  }
+  console.log("Validation successful");
   next();
 };
 
-// Валідація оновлення користувача
 const updateUserValid = (req, res, next) => {
-  const { id, ...user } = req.body;
-  if (Object.keys(user).length === 0 || !validateUser(user)) {
-    return res.status(400).json({ error: true, message: "User entity to update isn’t valid" });
-  }
+  // TODO: Implement validatior for user entity during update
   next();
 };
 

@@ -21,7 +21,7 @@ class Fight extends React.Component {
         }
     }
 
-    onFightStart = () => {
+    onFightStart = () => { 
         
     }
 
